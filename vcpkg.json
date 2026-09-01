@@ -1,0 +1,10 @@
+{
+  "name": "mdcat",
+  "version": "1.0.0",
+  "description": "A markdown-rendering cat replacement for the terminal",
+  "dependencies": [
+    "boost-program-options",
+    "boost-regex",
+    "boost-algorithm"
+  ]
+}

@@ -124,6 +124,44 @@ no redistributable. Verify with `dumpbin /dependents build-static\mdcat.exe`.
 Note that the static triplet builds its own copy of Boost, so the first
 configure is slow (~10 minutes); later builds reuse the cache.
 
+### 4. Linux: a self-contained binary (optional)
+
+vcpkg's default `x64-linux` triplet already links Boost statically, so the
+only floating dependency in a normal Linux build is the C++ runtime
+(`libstdc++.so` / `libgcc_s.so`) — visible with `ldd build/mdcat`. Statically
+linking those too gives you a single binary that depends on nothing but
+`libc`/`libm` and the dynamic linker, so it can be copied to another Linux
+machine without worrying about a mismatched runtime version:
+
+```sh
+cmake -S . -B build-static -G Ninja \
+  -DCMAKE_TOOLCHAIN_FILE=<path-to-vcpkg>/scripts/buildsystems/vcpkg.cmake \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_EXE_LINKER_FLAGS="-static-libgcc -static-libstdc++"
+cmake --build build-static
+```
+
+Verify with `ldd build-static/mdcat` — it should list only `linux-vdso.so.1`,
+`libc.so.6`, and `ld-linux-x86-64.so.2`.
+
+A `Makefile` wraps this for convenience:
+
+```sh
+make static                          # build-static/mdcat, statically linked
+make install                         # also copies it to ~/.local/bin
+```
+
+`VCPKG_ROOT` defaults to `~/vcpkg`; override it if vcpkg lives elsewhere:
+
+```sh
+make install VCPKG_ROOT=/opt/vcpkg
+```
+
+`make install` copies `build-static/mdcat` to `~/.local/bin/mdcat`. Make sure
+`~/.local/bin` is on your `PATH` (most distros add it automatically for login
+shells if the directory exists; otherwise add
+`export PATH="$HOME/.local/bin:$PATH"` to your shell profile).
+
 ### Installing
 
 ```sh
@@ -135,10 +173,15 @@ On Windows, `install(TARGETS)` copies `mdcat.exe` alone — the Boost DLL is
 will fail to start. Either use the self-contained build above, or copy the DLL
 next to the installed binary yourself.
 
+On Linux, `make install` (see above) is a simpler alternative to
+`cmake --install` for a single-user setup: it builds the static binary and
+drops it straight into `~/.local/bin`, no `sudo` or `--prefix` needed.
+
 ## Project layout
 
 ```
 CMakeLists.txt        # build configuration
+Makefile               # convenience wrapper: make static / make install (Linux)
 vcpkg.json             # vcpkg manifest (Boost dependencies)
 src/main.cpp           # CLI entry point, argument parsing, file validation
 src/markdown_renderer.* # the markdown -> ANSI-terminal renderer

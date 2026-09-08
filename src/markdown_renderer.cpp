@@ -20,6 +20,7 @@ using term::ansi::fg_bright_yellow;
 using term::ansi::fg_gray;
 using term::ansi::italic;
 using term::ansi::reset;
+using term::ansi::strikethrough;
 using term::ansi::underline;
 
 namespace {
@@ -159,6 +160,7 @@ size_t MarkdownRenderer::displayWidth(const std::string& text) {
 std::string MarkdownRenderer::formatInline(const std::string& text) const {
     static const boost::regex codeSpan(R"(`([^`]+)`)");
     static const boost::regex bold_re(R"(\*\*([^*]+)\*\*|__([^_]+)__)");
+    static const boost::regex strike_re(R"(~~([^~]+)~~)");
     static const boost::regex italic_re(R"(\*([^*\s][^*]*?)\*|_([^_\s][^_]*?)_)");
     static const boost::regex link_re(R"(\[([^\]]*)\]\(([^)]*)\))");
     static const boost::regex emoji_re(R"(:([a-zA-Z0-9_+\-]+):)");
@@ -183,6 +185,10 @@ std::string MarkdownRenderer::formatInline(const std::string& text) const {
     work = replaceMatches(work, bold_re, [&](const boost::smatch& m) {
         std::string content = m[1].matched ? m[1].str() : m[2].str();
         return std::string(bold) + content + reset;
+    });
+
+    work = replaceMatches(work, strike_re, [&](const boost::smatch& m) {
+        return std::string(strikethrough) + m[1].str() + reset;
     });
 
     work = replaceMatches(work, italic_re, [&](const boost::smatch& m) {
@@ -294,6 +300,18 @@ void MarkdownRenderer::renderBlockquote(const std::string& text) {
 
 void MarkdownRenderer::renderListItem(const std::string& indent, const std::string& marker,
                                        const std::string& text, bool ordered, int& /*ordinal*/) {
+    static const boost::regex task_re(R"(^\[([ xX])\]\s+(.*)$)");
+    boost::smatch m;
+    if (!ordered && boost::regex_match(text, m, task_re)) {
+        bool checked = (m[1].str() != " ");
+        std::string box = checked ? (std::string(fg_bright_green) + "\xe2\x98\x91")   // "☑"
+                                   : (std::string(fg_gray) + "\xe2\x98\x90");          // "☐"
+        std::string body = formatInline(m[2].str());
+        if (checked) body = std::string(dim) + strikethrough + body + reset;
+        out_ << indent << box << reset << " " << body << reset << "\n";
+        return;
+    }
+
     std::string bullet = ordered ? (marker + " ") : "\xe2\x80\xa2 ";  // "• "
     out_ << indent << fg_bright_cyan << bullet << reset << formatInline(text) << "\n";
 }

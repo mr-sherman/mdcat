@@ -1,0 +1,13 @@
+name: "mdcat CodeQL config"
+
+# Only analyze our own source. Everything under build*/vcpkg_installed is
+# third-party Boost/Boost-dependency headers fetched by vcpkg -- CodeQL has
+# no way to distinguish "our bug" from "a finding in a library we didn't
+# write", and we have no ability to fix or triage upstream Boost code here.
+paths:
+  - src
+
+paths-ignore:
+  - build
+  - build-static
+  - examples

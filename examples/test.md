@@ -1,6 +1,8 @@
-# Table Rendering Test
+# Rendering Test
 
-## 1. Basic alignment (left / center / right)
+## Tables
+
+### 1. Basic alignment (left / center / right)
 
 | Left     | Center   | Right   |
 |:---------|:--------:|--------:|
@@ -8,14 +10,14 @@
 | longer   | mid      | 1000    |
 | x        | yyyyyyyy | 7       |
 
-## 2. Uneven column widths
+### 2. Uneven column widths
 
 | ID | Description                                  | OK |
 |----|-----------------------------------------------|----|
 | 1  | Short                                          | :white_check_mark: |
 | 2  | A much longer description that stretches this column | :x: |
 
-## 3. Inline formatting inside cells
+### 3. Inline formatting inside cells
 
 | Feature      | Status      | Notes                        |
 |--------------|-------------|-------------------------------|
@@ -23,7 +25,7 @@
 | [Link](https://example.com) | done | :rocket: shipped it |
 | plain        | plain       | plain                         |
 
-## 4. Empty cells
+### 4. Empty cells
 
 | Name  | Value | Comment |
 |-------|-------|---------|
@@ -31,16 +33,27 @@
 |       | 42    |         |
 | bar   | 7     | ok      |
 
-## 5. No leading/trailing pipes
+### 5. No leading/trailing pipes
 
 Col A | Col B | Col C
 ------|-------|------
 1     | 2     | 3
 four  | five  | six
 
-## 6. Single character columns
+### 6. Single character columns
 
 |a|b|c|
 |-|-|-|
 |1|2|3|
 |4|5|6|
+
+## Strikethrough
+
+~~strikethrough text~~ mixed with **bold**, *italic*, and `inline code`.
+
+## Task Lists
+
+- [ ] unchecked task
+- [x] checked task
+- [X] checked task (capital X)
+- regular bullet item for comparison

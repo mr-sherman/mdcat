@@ -7,8 +7,9 @@
 // A small, deliberately non-exhaustive markdown renderer aimed at making
 // plain-text terminal output easier to read -- not at spec-complete CommonMark
 // compliance. It understands the markdown constructs people actually use day
-// to day: headers, emphasis, inline code, fenced code blocks, lists,
-// blockquotes, horizontal rules, links, tables, and emoji shortcodes.
+// to day: headers, emphasis, strikethrough, inline code, fenced code blocks,
+// lists, task lists, blockquotes, horizontal rules, links, tables, and emoji
+// shortcodes.
 class MarkdownRenderer {
 public:
     explicit MarkdownRenderer(std::ostream& out);
@@ -40,8 +41,9 @@ private:
     void renderParagraph(const std::string& text);
     size_t renderTable(const std::vector<std::string>& lines, size_t startIndex);
 
-    // Applies inline formatting (bold, italic, inline code, links, emoji
-    // shortcodes) and returns the ANSI-decorated string ready for printing.
+    // Applies inline formatting (bold, italic, strikethrough, inline code,
+    // links, emoji shortcodes) and returns the ANSI-decorated string ready
+    // for printing.
     std::string formatInline(const std::string& text) const;
 
     // Visible-width helper that ignores ANSI escape sequences and treats

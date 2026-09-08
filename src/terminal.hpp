@@ -14,6 +14,7 @@ constexpr const char* bold = "\033[1m";
 constexpr const char* dim = "\033[2m";
 constexpr const char* italic = "\033[3m";
 constexpr const char* underline = "\033[4m";
+constexpr const char* strikethrough = "\033[9m";
 
 constexpr const char* fg_red = "\033[31m";
 constexpr const char* fg_green = "\033[32m";

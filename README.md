@@ -12,10 +12,12 @@ the markdown people actually write day to day.
 
 - `#` through `######` headers, printed bold and color-coded by level, with
   an underline rule under `#` and `##` so they stand out
-- **bold**, *italic*, and `inline code` spans
+- **bold**, *italic*, ~~strikethrough~~, and `inline code` spans
 - Fenced code blocks (```` ``` ````), rendered in a boxed, dimmed panel
 - Pretty-printed tables, including column alignment (`:---`, `:---:`, `---:`)
 - Bulleted and numbered lists (including nested/indented items)
+- Task lists (`- [ ]` / `- [x]`), rendered as ☐/☑ with checked items dimmed
+  and struck through
 - Blockquotes (`>`)
 - Horizontal rules (`---`, `***`, `___`)
 - Links `[text](url)`

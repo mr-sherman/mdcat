@@ -65,4 +65,4 @@ jobs:
         shell: bash
         run: |
           "${{ matrix.binary }}" --help
-          "${{ matrix.binary }}" examples/tables.md
+          "${{ matrix.binary }}" examples/test.md

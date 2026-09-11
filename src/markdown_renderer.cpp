@@ -8,6 +8,7 @@
 #include <sstream>
 
 #include "emoji_map.hpp"
+#include "syntax_highlight.hpp"
 #include "terminal.hpp"
 
 using term::ansi::bold;
@@ -317,17 +318,17 @@ void MarkdownRenderer::renderListItem(const std::string& indent, const std::stri
 }
 
 void MarkdownRenderer::renderCodeBlock(const std::vector<std::string>& lines, const std::string& lang) {
-    (void)lang;
     auto repeat = [](const char* utf8Seq, int count) {
         std::string s;
         for (int i = 0; i < count; ++i) s += utf8Seq;
         return s;
     };
 
-    out_ << dim << "\xe2\x94\x8c\xe2\x94\x80 code " << repeat("-", std::max(0, term_width_ - 8)) << reset
-         << "\n";
+    std::string header = std::string("\xe2\x94\x8c\xe2\x94\x80 ") + (lang.empty() ? "code" : lang) + " ";
+    out_ << dim << header
+         << repeat("-", std::max(0, term_width_ - static_cast<int>(displayWidth(header)))) << reset << "\n";
     for (const auto& l : lines) {
-        out_ << dim << "\xe2\x94\x82 " << reset << term::ansi::fg_bright_yellow << l << reset << "\n";
+        out_ << dim << "\xe2\x94\x82 " << reset << syntax::highlight(l, lang) << reset << "\n";
     }
     out_ << dim << "\xe2\x94\x94" << repeat("\xe2\x94\x80", std::max(0, term_width_ - 1)) << reset << "\n\n";
 }

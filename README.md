@@ -37,6 +37,19 @@ mdcat README.md
 Output is written to stdout with ANSI formatting; redirecting to a file or
 pipe still works, you'll just see the raw escape codes.
 
+`mdcat` also reads from stdin instead of a file — either explicitly with
+`-`, or implicitly when no argument is given and stdin isn't an interactive
+terminal:
+
+```sh
+git show HEAD:README.md | mdcat
+curl -s https://example.com/notes.md | mdcat -
+```
+
+The `.md`/`.markdown` extension check only applies to file arguments; stdin
+input isn't checked. Running `mdcat` with no argument and nothing piped in
+prints the usage message instead of waiting on keyboard input.
+
 When stdout is an interactive terminal and the rendered output is taller
 than the screen, `mdcat` pipes it through a pager — `$PAGER` if set,
 otherwise `less -R` (the `-R` preserves the ANSI colors) — instead of

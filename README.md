@@ -13,7 +13,10 @@ the markdown people actually write day to day.
 - `#` through `######` headers, printed bold and color-coded by level, with
   an underline rule under `#` and `##` so they stand out
 - **bold**, *italic*, ~~strikethrough~~, and `inline code` spans
-- Fenced code blocks (```` ``` ````), rendered in a boxed, dimmed panel
+- Fenced code blocks (```` ``` ````), rendered in a boxed panel with basic
+  syntax highlighting (keywords, strings, comments, numbers) for C/C++,
+  Python, JavaScript/TypeScript, Bash, Go, Rust, Java, Ruby, JSON, YAML, and
+  SQL — other/unrecognized languages fall back to a flat dimmed rendering
 - Pretty-printed tables, including column alignment (`:---`, `:---:`, `---:`)
 - Bulleted and numbered lists (including nested/indented items)
 - Task lists (`- [ ]` / `- [x]`), rendered as ☐/☑ with checked items dimmed
@@ -187,6 +190,7 @@ Makefile               # convenience wrapper: make static / make install (Linux)
 vcpkg.json             # vcpkg manifest (Boost dependencies)
 src/main.cpp           # CLI entry point, argument parsing, file validation
 src/markdown_renderer.* # the markdown -> ANSI-terminal renderer
+src/syntax_highlight.*  # per-language keyword/string/comment/number highlighting for code blocks
 src/terminal.*          # cross-platform ANSI/UTF-8 console setup, width detection
 src/emoji_map.hpp       # :shortcode: -> emoji glyph table
 examples/tables.md      # table-rendering smoke test / reference

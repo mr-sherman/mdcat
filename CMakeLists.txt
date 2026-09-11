@@ -21,6 +21,7 @@ find_package(Boost REQUIRED COMPONENTS program_options regex)
 add_executable(mdcat
     src/main.cpp
     src/markdown_renderer.cpp
+    src/syntax_highlight.cpp
     src/terminal.cpp
 )
 

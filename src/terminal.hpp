@@ -48,4 +48,8 @@ int height(int fallback = 24);
 // being redirected to a file or piped to another process.
 bool stdout_is_tty();
 
+// True when stdin is connected to an interactive terminal, as opposed to
+// being redirected from a file or piped from another process.
+bool stdin_is_tty();
+
 }  // namespace term

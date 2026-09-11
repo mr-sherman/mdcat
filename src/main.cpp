@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
     po::positional_options_description positional;
     positional.add("file", 1);
 
-    po::options_description visible("Usage: mdcat <file.md>");
+    po::options_description visible("Usage: mdcat <file.md|->");
     visible.add_options()("help,h", "show this help message");
 
     po::options_description all;
@@ -45,33 +45,57 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    if (vm.count("help") || !vm.count("file")) {
+    if (vm.count("help")) {
         std::cout << visible << "\n";
-        return vm.count("help") ? 0 : 1;
+        return 0;
     }
 
-    std::filesystem::path path(vm["file"].as<std::string>());
+    // Reads from stdin when given explicitly (`mdcat -`, the conventional
+    // stdin marker) or implicitly, when no file was given and stdin isn't an
+    // interactive terminal (e.g. `git show HEAD:README.md | mdcat`). A bare
+    // `mdcat` with nothing piped in falls through to the usage message below
+    // rather than silently blocking on keyboard input.
+    bool useStdin = false;
+    std::filesystem::path path;
 
-    if (!hasMarkdownExtension(path)) {
-        std::cerr << "mdcat: '" << path.string() << "' is not a markdown file (expected .md or .markdown)\n";
-        return 1;
-    }
-
-    std::error_code ec;
-    if (!std::filesystem::exists(path, ec) || !std::filesystem::is_regular_file(path, ec)) {
-        std::cerr << "mdcat: '" << path.string() << "' not found\n";
-        return 1;
-    }
-
-    std::ifstream file(path, std::ios::binary);
-    if (!file) {
-        std::cerr << "mdcat: could not open '" << path.string() << "'\n";
+    if (vm.count("file")) {
+        std::string arg = vm["file"].as<std::string>();
+        if (arg == "-") {
+            useStdin = true;
+        } else {
+            path = arg;
+        }
+    } else if (!term::stdin_is_tty()) {
+        useStdin = true;
+    } else {
+        std::cout << visible << "\n";
         return 1;
     }
 
     std::ostringstream buffer;
     MarkdownRenderer renderer(buffer);
-    renderer.render(file);
+
+    if (useStdin) {
+        renderer.render(std::cin);
+    } else {
+        if (!hasMarkdownExtension(path)) {
+            std::cerr << "mdcat: '" << path.string() << "' is not a markdown file (expected .md or .markdown)\n";
+            return 1;
+        }
+
+        std::error_code ec;
+        if (!std::filesystem::exists(path, ec) || !std::filesystem::is_regular_file(path, ec)) {
+            std::cerr << "mdcat: '" << path.string() << "' not found\n";
+            return 1;
+        }
+
+        std::ifstream file(path, std::ios::binary);
+        if (!file) {
+            std::cerr << "mdcat: could not open '" << path.string() << "'\n";
+            return 1;
+        }
+        renderer.render(file);
+    }
 
     pager::display(buffer.str());
 

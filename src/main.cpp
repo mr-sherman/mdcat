@@ -3,8 +3,10 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 #include "markdown_renderer.hpp"
+#include "pager.hpp"
 #include "terminal.hpp"
 
 namespace po = boost::program_options;
@@ -67,8 +69,11 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    MarkdownRenderer renderer(std::cout);
+    std::ostringstream buffer;
+    MarkdownRenderer renderer(buffer);
     renderer.render(file);
+
+    pager::display(buffer.str());
 
     return 0;
 }

@@ -40,4 +40,12 @@ void enable_console_features();
 // determined (e.g. output is redirected to a file).
 int width(int fallback = 80);
 
+// Best-effort terminal height in rows. Falls back to 24 when it can't be
+// determined (e.g. output is redirected to a file).
+int height(int fallback = 24);
+
+// True when stdout is connected to an interactive terminal, as opposed to
+// being redirected to a file or piped to another process.
+bool stdout_is_tty();
+
 }  // namespace term

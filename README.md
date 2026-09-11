@@ -37,6 +37,12 @@ mdcat README.md
 Output is written to stdout with ANSI formatting; redirecting to a file or
 pipe still works, you'll just see the raw escape codes.
 
+When stdout is an interactive terminal and the rendered output is taller
+than the screen, `mdcat` pipes it through a pager — `$PAGER` if set,
+otherwise `less -R` (the `-R` preserves the ANSI colors) — instead of
+dumping it all at once. Redirecting or piping `mdcat`'s output, or output
+that already fits on one screen, is never paged.
+
 ```sh
 mdcat --help
 ```
@@ -191,7 +197,8 @@ vcpkg.json             # vcpkg manifest (Boost dependencies)
 src/main.cpp           # CLI entry point, argument parsing, file validation
 src/markdown_renderer.* # the markdown -> ANSI-terminal renderer
 src/syntax_highlight.*  # per-language keyword/string/comment/number highlighting for code blocks
-src/terminal.*          # cross-platform ANSI/UTF-8 console setup, width detection
+src/pager.*             # pipes rendered output through $PAGER/less when it overflows the screen
+src/terminal.*          # cross-platform ANSI/UTF-8 console setup, width/height detection
 src/emoji_map.hpp       # :shortcode: -> emoji glyph table
 examples/tables.md      # table-rendering smoke test / reference
 ```

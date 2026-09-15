@@ -60,7 +60,7 @@ jobs:
           output: sarif-results
 
       - name: Convert SARIF to CSV
-        uses: mr-sherman/sarif-to-csv@v2.4
+        uses: mr-sherman/sarif-to-csv@v3.0
         with:
           input-file: sarif-results/cpp.sarif
           output-file: sarif-results/results.csv
